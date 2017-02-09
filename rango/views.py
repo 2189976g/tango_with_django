@@ -44,10 +44,15 @@ def index(request):
     return response
 
 def about(request):
+    context_dict = {}
     if request.session.test_cookie_worked():
         print("TEST COOKIE WORKED")
         request.session.delete_test_cookie()
-    return render(request, 'rango/about.html')
+        
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+    
+    return render(request, 'rango/about.html', context_dict)
 
 
 def show_category(request, category_name_slug):
@@ -161,7 +166,7 @@ def user_login(request):
                 return HttpResponse('Your Rango account is disables')
         else:
             print("Invalid login details: {0}, {1}".format(username, password))
-            return HttpResponse("Invalid login details supplied")
+            return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, 'rango/login.html', {})
 
